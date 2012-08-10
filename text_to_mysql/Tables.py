@@ -15,6 +15,9 @@ class SentencePhraseTableEntry:
 	
 	def __str__(self):
 		return str((self.tag,self.text))
+	
+	def __eq__(self, other):
+		return (self.tag == other.tag) and (self.text == other.text)
 
 
 class SentencePhraseRelTableEntry:
@@ -39,3 +42,7 @@ class SentencePhraseRelTableEntry:
 	
 	def __str__(self):
 		return str((str(self.objEntry),str(self.targetEntry),self.vertLvl,self.horiLvl))
+		
+	def hasSameObjEntry(self, sentencePhraseRelTableEntry):
+		return (self.objEntry == sentencePhraseRelTableEntry.objEntry) and (self.vertLvl == sentencePhraseRelTableEntry.vertLvl) and (self.horiLvl == sentencePhraseRelTableEntry.horiLvl)
+		

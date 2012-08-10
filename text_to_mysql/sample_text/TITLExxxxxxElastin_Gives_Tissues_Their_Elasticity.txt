@@ -1,0 +1,1 @@
+( (S (NP (NP (JJ Many) (JJ vertebrate) (NNS tissues,)) (PP (JJ such) (IN as) (NP (NP (JJ skin,) (NN blood) (NN vessels,)) (CC and) (NP (NN lungs,))))) (VP (VBP need) (S (VP (TO to) (VP (VB be) (ADJP (DT both) (JJ strong) (CC and) (JJ elastic)) (SBAR (IN in) (NN order) (S (VP (TO to) (VP (VB function.)))))))))) )

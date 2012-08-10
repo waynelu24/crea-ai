@@ -5,6 +5,9 @@ DROP TABLE sentence_tbl;
 DROP TABLE sentence_phrase_rel_tbl;
 DROP TABLE sentence_phrase_tbl;
 DROP TABLE book_tbl;
+DROP TABLE noun_tbl;
+DROP TABLE verb_tbl;
+DROP TABLE cond_tbl;
 
 
 
@@ -69,7 +72,7 @@ INDEX (word_id));
 
 
 
-----------------------------------------------------------
+
 
 
 CREATE TABLE noun_tbl(

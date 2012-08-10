@@ -25,11 +25,12 @@ public class MysqlToJsonTest{
 			System.out.println("$ java -cp .:mysql-connector-java-5.1.20-bin.jar MysqlToJsonTest _user_ _password_");
 			return;
 		}
-		
+		//x = 100, y = 50
 		boolean iamdebugging = true;
-		int screenSizeHorizontal = 1000;  // horizontal pixels
-		int verticalStepSize = 30;  // change to -30 when needed and also change rootNodeY
-		int horizontalStepSize = 30; // default value, will be reduced later if sentence is too long and goes out of bound with default value
+		int screenSizeHorizontal = 2500;  // horizontal pixels
+		int verticalStepSize = 50;  // change to -30 when needed and also change rootNodeY
+		int horizontalStepSize = 100; // default value, will be reduced later if sentence is too long and goes out of bound with default value
+		boolean SCALE = false;
 		String jsonFormat = "{\\\"subject_x\\\":\\\"xxxsubject_xxxx\\\",\\\"subject_y\\\":\\\"xxxsubject_yxxx\\\",\\\"subject_z\\\":\\\"999\\\",\\\"subject_val\\\":\\\"999\\\",\\\"object1_x\\\":\\\"xxxobject1_xxxx\\\",\\\"object1_y\\\":\\\"xxxobject1_yxxx\\\",\\\"object1_z\\\":\\\"999\\\",\\\"object1_val\\\":\\\"999\\\",\\\"type\\\":\\\"SD2\\\",\\\"direction\\\":\\\"1\\\",\\\"subject_name\\\":\\\"xxxsubject_namexxx\\\",\\\"subject_name_alias\\\":\\\"xxxsubject_namexxx\\\",\\\"object1_name\\\":\\\"xxxobject1_namexxx\\\",\\\"object1_name_alias\\\":\\\"xxxobject1_namexxx\\\",\\\"verb\\\":\\\"xxxverbxxx\\\"}";
 		
 		FillRelations fillRelations1 = new FillRelations(args[0],args[1]);
@@ -41,6 +42,7 @@ public class MysqlToJsonTest{
 		ResultSet sentencePhraseRS = null;
 		ResultSet numRowsRS = null; // num rows in sentence_phrase_tbl of a sentence
 		ResultSet childCountRS = null;
+		ResultSet vertLvlRS = null; 
 		
 		try {
 			
@@ -77,9 +79,10 @@ public class MysqlToJsonTest{
             		numRowsRS.next();
             		int numRows = numRowsRS.getInt(1);
             		
-            		// scale down horizontalStepSize if the default value will go out of bound            		
-            		if(numRows * horizontalStepSize > screenSizeHorizontal) 
-            			horizontalStepSize = screenSizeHorizontal / numRows ;
+            		// scale down horizontalStepSize if the default value will go out of bound    
+            		if(SCALE)        		
+		        		if(numRows * horizontalStepSize > screenSizeHorizontal) 
+		        			horizontalStepSize = screenSizeHorizontal / numRows ;
             		
             		// determine the coordinate of the root node
             		int rootNodeX = screenSizeHorizontal / 2; 
@@ -146,7 +149,7 @@ public class MysqlToJsonTest{
             		childCountRS.next();
             		numChildren = childCountRS.getInt(1);
             		int objectX = (nthChild - numChildren/2) * horizontalStepSize + cc.getXCoord(objectPhraseID);
-            		int objectY = cc.getXCoord(objectPhraseID) + verticalStepSize;             		
+            		int objectY = cc.getYCoord(objectPhraseID) + verticalStepSize;             		
             		cc.addUnique(targetPhraseID,objectX,objectY);
             		jsonNode = jsonNode.replaceAll("xxxobject1_xxxx",(new Integer(objectX)).toString());
             		jsonNode = jsonNode.replaceAll("xxxobject1_yxxx",(new Integer(objectY)).toString());
@@ -220,7 +223,7 @@ public class MysqlToJsonTest{
             		
             		//take care of coords
             		int objectX = (nthChild - numChildren/2) * horizontalStepSize + cc.getXCoord(objectPhraseID);
-            		int objectY = cc.getXCoord(objectPhraseID) + verticalStepSize;             		
+            		int objectY = cc.getYCoord(objectPhraseID) + verticalStepSize;             		
             		cc.addUnique(targetPhraseID,objectX,objectY);
             		jsonNode = jsonNode.replaceAll("xxxobject1_xxxx",(new Integer(objectX)).toString());
             		jsonNode = jsonNode.replaceAll("xxxobject1_yxxx",(new Integer(objectY)).toString());
@@ -257,6 +260,8 @@ public class MysqlToJsonTest{
 		       sentencePhraseRS.close();
 		       numRowsRS.close();
 		       childCountRS.close();
+		       if(vertLvlRS != null)
+		           vertLvlRS.close();
            }catch(SQLException sqle){
                Logger lgr = Logger.getLogger(MysqlToJsonTest.class.getName());
                lgr.log(Level.SEVERE, sqle.getMessage(), sqle);
